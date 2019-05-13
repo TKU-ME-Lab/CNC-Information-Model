@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<opc:ModelDesign 
+    xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:OpcUa="http://opcfoundation.org/UA/"
+    xmlns:opc="http://opcfoundation.org/UA/ModelDesign.xsd"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.opcfoundation.org/CNC/"
+    TargetNamespace="http://www.opcfoundation.org/CNC/"
+    TargetVersion="1.04"
+    TargetPublicationDate="2019-05-31T00:00:00Z">
+
+    <opc:Namespaces>
+        <opc:Namespace Name="OpcUaCNC" Prefix="Opc.Ua.CNC" XmlPrefix="CNC">http://www.opcfoundation.org/CNC/</opc:Namespace>
+        <opc:Namespace Name="OpcUa" Prefix="Opc.Ua" InternalPrefix="Opc.Ua.Server" XmlNamespace="http://opcfoundation.org/UA/2008/02/Types.xsd" XmlPrefix="OpcUa">http://opcfoundation.org/UA/</opc:Namespace>
+    </opc:Namespaces>
+
+    <opc:ObjectType SymbolicName="CncComponentType" TypeDefinition="OpcUa:BaseObjectType">
+        <opc:DisplayName>CncComponentType</opc:DisplayName>
+        <opc:Description>Base component for soft- or hardware elements of a CNC system.</opc:Description>
+    </opc:ObjectType>
+
+    <opc:ObjectType SymbolicName="CncDriveType" TypeDefinition="CncComponentType">
+        <opc:DisplayName>CncDriveType</opc:DisplayName>
+        <opc:Description>Base component for CNC specific drive componentes (e.g. axis or spindle).</opc:Description>
+        <opc:References>
+            <opc:Reference>
+                <opc:ReferenceType IsInverse="true">OpcUa:HasSubtype</opc:ReferenceType>
+                <opc:TargetId>CncComponentType</opc:TargetId>
+            </opc:Reference>
+        </opc:References>
+    </opc:ObjectType>
+
+    <opc:ObjectType SymbolicName="CncAxisListType" TypeDefinition="OpcUa:BaseObjectType">
+        <opc:DisplayName>CncAxisListType</opc:DisplayName>
+        <opc:Description>List Type of CNC axis objects.</opc:Description>
+        <opc:References>
+            <opc:Reference>
+                <opc:ReferenceType IsInverse="true">OpcUa:HasSubtype</opc:ReferenceType>
+                <opc:TargetId>OpcUa:BaseObjectType</opc:TargetId>
+            </opc:Reference>
+            <opc:Reference>
+                <opc:ReferenceType IsInverse="true">OpcUa:Organizes</opc:ReferenceType>
+                <opc:TargetId>OpcUa:ObjectsFolder</opc:TargetId>
+            </opc:Reference>
+        </opc:References>
+    </opc:ObjectType>
+
+    <opc:ObjectType SymbolicName="CncInterfaceType" TypeDefinition="OpcUaL:BaseObjectType">
+        <opc:DisplayName>CncInterfaceType</opc:DisplayName>
+        <opc:Description>Entry point to CNC data interface.s</opc:Description>
+        <opc:Children>
+            <opc:Object SymbolicName="CncAxisList" TypeDefinition="CncAxisListType" ModellingRule="Mandatory"/>
+        </opc:Children>
+        <opc:References>
+            <opc:Reference>
+                <opc:ReferenceType IsInverse="true">OpcUa:HasSubtype</opc:ReferenceType>
+                <opc:TargetId>OpcUa:BaseObjectType</opc:TargetId>
+            </opc:Reference>
+        </opc:References>
+    </opc:ObjectType>
+
+    <opc:Object SymbolicName="CncInterface" TypeDefinition="CncInterfaceType">
+        <opc:DisplayName>CncInterface</opc:DisplayName>
+        <opc:Description>Entry point to CNC data interface</opc:Description>
+        <opc:References>
+            <opc:Reference>
+                <opc:ReferenceType IsInverse="true">OpcUa:HasSubtype</opc:ReferenceType>
+                <opc:TargetId>CncInterfaceType</opc:TargetId>
+            </opc:Reference>
+        </opc:References>
+    </opc:Object>
+
+
+</opc:ModelDesign>

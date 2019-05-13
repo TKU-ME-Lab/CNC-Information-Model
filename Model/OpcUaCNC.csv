@@ -1,0 +1,7 @@
+CncComponentType,1001,ObjectType
+CncDriveType,1003,ObjectType
+CncInterfaceType,1007,ObjectType
+CncAxisListType,1008,ObjectType
+CncInterfaceType_CncAxisList,15001,Object
+CncInterface,15002,Object
+CncInterface_CncAxisList,15003,Object
