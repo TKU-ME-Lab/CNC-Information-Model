@@ -36,18 +36,25 @@ IF NOT EXIST %OUTPUT% MKDIR %OUTPUT%
 IF NOT EXIST %OUTPUT%\Schema MKDIR %OUTPUT%\Schema
 IF NOT EXIST %OUTPUT%\DotNet MKDIR %OUTPUT%\DotNet
 IF NOT EXIST %OUTPUT%\AnsiC MKDIR %OUTPUT%\AnsiC
+IF NOT EXIST %OUTPUT%\OpcUaCNC MKDIR %OUTPUT%\OpcUaCNC
 
-REM STEP 1) Generate all of our files first...
+REM ECHO ON
+REM COPY "%INPUT_STD%\StandardTypes.xml" ".\StandardTypes.xml"
+REM COPY "%INPUT_STD%\StandardTypes.csv" ".\StandardTypes.csv"
+REM COPY "%INPUT_STD%\UA*" ".\"
+REM COPY "%INPUT_STD%\BuiltInTypes.xml" ".\"
+REM @ECHO OFF
 
-SET PARTNAME="StandardTypes"
-ECHO Building Model %PARTNAME%
-ECHO %MODELCOMPILER% -d2 "%INPUT_STD%\StandardTypes.xml" %VERSION% %EXCLUDE% -d2 "%INPUT_STD%\UA Core Services.xml" -c "%INPUT_STD%\StandardTypes.csv" -o2 "%OUTPUT%\Schema\" -stack "%OUTPUT%\DotNet\" -ansic "%OUTPUT%\AnsiC\"
-%MODELCOMPILER% -d2 "%INPUT_STD%\StandardTypes.xml" %VERSION% %EXCLUDE% -d2 "%INPUT_STD%\UA Core Services.xml" -c "%INPUT_STD%\StandardTypes.csv" -o2 "%OUTPUT%\Schema\" -stack "%OUTPUT%\DotNet\" -ansic "%OUTPUT%\AnsiC\"
-IF %ERRORLEVEL% NEQ 0 ( ECHO Failed %PARTNAME% & EXIT /B 1 )
+REM REM STEP 1) Generate all of our files first...
+REM SET PARTNAME="StandardTypes"
+REM ECHO Building Model %PARTNAME%
+REM ECHO %MODELCOMPILER% -d2 ".\StandardTypes.xml" %VERSION% %EXCLUDE% -d2 ".\UA Core Services.xml" -c ".\StandardTypes.csv" -o2 "%OUTPUT%\Schema\" -stack "%OUTPUT%\DotNet\" -ansic "%OUTPUT%\AnsiC\"
+REM %MODELCOMPILER% -d2 ".\StandardTypes.xml" %VERSION% %EXCLUDE% -d2 ".\UA Core Services.xml" -c ".\StandardTypes.csv" -o2 "%OUTPUT%\Schema\" -stack "%OUTPUT%\DotNet\" -ansic "%OUTPUT%\AnsiC\"
+REM IF %ERRORLEVEL% NEQ 0 ( ECHO Failed %PARTNAME% & EXIT /B 1 )
 
 SET PARTNAME="OpcUaCNC"
 ECHO Building %PARTNAME%
-IF NOT EXIST %OUTPUT%\OpcUaCNC MKDIR %OUTPUT%\OpcUaCNC
+ECHO %MODELCOMPILER% -d2 "%INPUT_CNC%\OpcUaCNC.xml" -cg "%INPUT_CNC%\OpcUaCNC.csv" -o2 "%OUTPUT%\OpcUaCNC\"
 %MODELCOMPILER% -d2 "%INPUT_CNC%\OpcUaCNC.xml" -cg "%INPUT_CNC%\OpcUaCNC.csv" -o2 "%OUTPUT%\OpcUaCNC\"
 IF %ERRORLEVEL% NEQ 0 ( ECHO Failed %PARTNAME% & EXIT /B 5 )
 

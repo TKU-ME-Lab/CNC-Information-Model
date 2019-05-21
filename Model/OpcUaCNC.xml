@@ -15,20 +15,23 @@
         <opc:Namespace Name="OpcUa" Prefix="Opc.Ua" InternalPrefix="Opc.Ua.Server" XmlNamespace="http://opcfoundation.org/UA/2008/02/Types.xsd" XmlPrefix="OpcUa">http://opcfoundation.org/UA/</opc:Namespace>
     </opc:Namespaces>
 
-    <opc:ObjectType SymbolicName="CncComponentType" TypeDefinition="OpcUa:BaseObjectType">
+    <opc:ObjectType SymbolicName="CncComponentType" TypeDefinition="OpcUa:BaseObjectType" IsAbstract="true">
         <opc:DisplayName>CncComponentType</opc:DisplayName>
         <opc:Description>Base component for soft- or hardware elements of a CNC system.</opc:Description>
     </opc:ObjectType>
 
-    <opc:ObjectType SymbolicName="CncDriveType" TypeDefinition="CncComponentType">
+    <opc:ObjectType SymbolicName="CncDriveType" TypeDefinition="CncComponentType" IsAbstract="true">
         <opc:DisplayName>CncDriveType</opc:DisplayName>
         <opc:Description>Base component for CNC specific drive componentes (e.g. axis or spindle).</opc:Description>
-        <opc:References>
-            <opc:Reference>
-                <opc:ReferenceType IsInverse="true">OpcUa:HasSubtype</opc:ReferenceType>
-                <opc:TargetId>CncComponentType</opc:TargetId>
-            </opc:Reference>
-        </opc:References>
+        <opc:Children>
+            <!-- <opc:Variable SymbolicName="ActChannel" TypeDefinition="OpcUa:DataItemType" DataType="" ModellingRule="Mandatory"> -->
+            <opc:Variable SymbolicName="ActLoad" TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:Double"  ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActPower" TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:Double"  ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActTorque" TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:Double"  ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="CmdTorque" TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:Double"  ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="IsInactive" TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:Boolean"  ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="IsVirtual" TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:Boolean"  ModellingRule="Mandatory"/>
+        </opc:Children>
     </opc:ObjectType>
 
     <opc:ObjectType SymbolicName="CncAxisListType" TypeDefinition="OpcUa:BaseObjectType">
@@ -46,11 +49,80 @@
         </opc:References>
     </opc:ObjectType>
 
-    <opc:ObjectType SymbolicName="CncInterfaceType" TypeDefinition="OpcUaL:BaseObjectType">
+    <opc:DataType SymbolicName="CncPositionDataType" BaseType="OpcUa:Structure">
+        <opc:DisplayName>CncPositionDataType</opc:DisplayName>
+        <opc:Description>Structure of position elements.</opc:Description>
+        <opc:Fields>
+            <opc:Field Name="ActPos" DataType="OpcUa:Double">
+                <opc:Description>Position current value.</opc:Description>
+            </opc:Field>
+            <opc:Field Name="CmdPos" DataType="OpcUa:Double">
+                <opc:Description>Position setpoint value.</opc:Description>
+            </opc:Field>
+            <opc:Field Name="RemDist" DataType="OpcUa:Double">
+                <opc:Description>Remaining distance.</opc:Description>
+            </opc:Field>
+        </opc:Fields>
+    </opc:DataType>
+
+    <opc:VariableType SymbolicName="CncPositionVariableType" DataType="CncPositionDataType" TypeDefinition="OpcUa:BaseDataVariableType">
+        <opc:DisplayName>CncPositionVariableType</opc:DisplayName>
+        <opc:Description>Group of position values.</opc:Description>
+    </opc:VariableType>
+
+    <opc:ObjectType SymbolicName="CncChannelType" TypeDefinition="CncComponentType">
+        <opc:DisplayName>CncChannelType</opc:DisplayName>
+        <opc:Description>CNC channel component.</opc:Description>
+        <opc:Children>
+            <opc:Variable SymbolicName="ActFeedrate"              TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:Double" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActGFunctions"            TypeDefinition="OpcUa:DataItemType"   DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActJogIncrement"          TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:Double" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActMainProgramFile"       TypeDefinition="OpcUa:DataItemType"   DataType="OpcUa:String" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActMainProgramFileOffset" TypeDefinition="OpcUa:DataItemType"   DataType="OpcUa:UInt32" ModellingRule="Optional"/>
+            <opc:Variable SymbolicName="ActMainProgramLine"       TypeDefinition="OpcUa:DataItemType"   DataType="OpcUa:String" ModellingRule="Optional"/>
+            <opc:Variable SymbolicName="ActMainProgramName"       TypeDefinition="OpcUa:DataItemType"   DataType="OpcUa:String" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActMFunctions"            TypeDefinition="OpcUa:DataItemType"   DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <!-- <opc:Variable SymbolicName="ActOperationMode" TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/> -->
+            <opc:Variable SymbolicName="ActOverride"              TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:Double" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActProgramBlock"          TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActProgramFile"           TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActProgramFileOffset"     TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:ByteString" ModellingRule="Optional"/>
+            <opc:Variable SymbolicName="ActProgramLine"           TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:ByteString" ModellingRule="Optional"/>
+            <opc:Variable SymbolicName="ActProgramName"           TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActProgramStatus"         TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="ActStatus"                TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="BlockMode"                TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="CmdFeedrate"              TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="CmdOverride"              TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="DryRunFeed"               TypeDefinition="OpcUa:AnalogItemType" DataType="OpcUa:ByteString" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="FeedHold"                 TypeDefinition="OpcUa:DataItemType" DataType="OpcUa:Boolean" ModellingRule="Mandatory"/>
+            <!-- <opc:> -->
+            <opc:Variable SymbolicName="PodTcpBcsX" TypeDefinition="CncPositionVariableType" DataType="CncPositionDataType" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="PodTcpBcsY" TypeDefinition="CncPositionVariableType" DataType="CncPositionDataType" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="PodTcpWcsX" TypeDefinition="CncPositionVariableType" DataType="CncPositionDataType" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="PodTcpWcsY" TypeDefinition="CncPositionVariableType" DataType="CncPositionDataType" ModellingRule="Mandatory"/>
+        </opc:Children>
+    </opc:ObjectType>
+
+    <opc:ObjectType SymbolicName="CncChannelListType" TypeDefinition="OpcUa:BaseObjectType">
+        <opc:DisplayName>CncChannelListType</opc:DisplayName>
+        <opc:Description>List of CNC channel objects.</opc:Description>
+        <opc:Children>
+            <opc:Object SymbolicName="CncChannel" TypeDefinition="CncChannelType" ModellingRule="MandatoryPlaceholder"/>
+        </opc:Children>
+    </opc:ObjectType>
+
+    <opc:ObjectType SymbolicName="CncInterfaceType" TypeDefinition="OpcUa:BaseObjectType" SupportsEvents="true">
         <opc:DisplayName>CncInterfaceType</opc:DisplayName>
-        <opc:Description>Entry point to CNC data interface.s</opc:Description>
+        <opc:Description>Entry point to CNC data interface.</opc:Description>
         <opc:Children>
             <opc:Object SymbolicName="CncAxisList" TypeDefinition="CncAxisListType" ModellingRule="Mandatory"/>
+            <opc:Object SymbolicName="CncChannelList" TypeDefinition="CncChannelListType" ModellingRule="Mandatory"/>
+            <opc:Variable SymbolicName="CncTypeName" DataType="OpcUa:String"/>
+            <opc:Variable SymbolicName="Fix" DataType="OpcUa:String"/>
+            <opc:Variable SymbolicName="VendorName" DataType="OpcUa:String"/>
+            <opc:Variable SymbolicName="VendorRevision" DataType="OpcUa:String"/>
+            <opc:Variable SymbolicName="Version" DataType="OpcUa:String"/>
         </opc:Children>
         <opc:References>
             <opc:Reference>
@@ -70,6 +142,4 @@
             </opc:Reference>
         </opc:References>
     </opc:Object>
-
-
 </opc:ModelDesign>
