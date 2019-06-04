@@ -10,7 +10,7 @@ SETLOCAL
 
 set MODELCOMPILER=.\UA-ModelCompiler\Bin\Release\Opc.Ua.ModelCompiler.exe
 set OUTPUT=.\NodeSets
-set INPUT_STD=.\UA-ModelCompiler\ModelCompiler\Design
+set INPUT_STD_SOURCE=.\UA-ModelCompiler\ModelCompiler
 set INPUT_CNC=.\Model
 
 REM Set the following values to automatically copy the generated source code to your relevant stack locations
@@ -38,19 +38,17 @@ IF NOT EXIST %OUTPUT%\DotNet MKDIR %OUTPUT%\DotNet
 IF NOT EXIST %OUTPUT%\AnsiC MKDIR %OUTPUT%\AnsiC
 IF NOT EXIST %OUTPUT%\OpcUaCNC MKDIR %OUTPUT%\OpcUaCNC
 
-REM ECHO ON
-REM COPY "%INPUT_STD%\StandardTypes.xml" ".\StandardTypes.xml"
-REM COPY "%INPUT_STD%\StandardTypes.csv" ".\StandardTypes.csv"
-REM COPY "%INPUT_STD%\UA*" ".\"
-REM COPY "%INPUT_STD%\BuiltInTypes.xml" ".\"
-REM @ECHO OFF
+IF NOT EXIST .\ModelCompiler MKDIR .\ModelCompiler
+XCOPY %INPUT_STD_SOURCE% /y /s /q .\ModelCompiler
 
-REM REM STEP 1) Generate all of our files first...
-REM SET PARTNAME="StandardTypes"
-REM ECHO Building Model %PARTNAME%
-REM ECHO %MODELCOMPILER% -d2 ".\StandardTypes.xml" %VERSION% %EXCLUDE% -d2 ".\UA Core Services.xml" -c ".\StandardTypes.csv" -o2 "%OUTPUT%\Schema\" -stack "%OUTPUT%\DotNet\" -ansic "%OUTPUT%\AnsiC\"
-REM %MODELCOMPILER% -d2 ".\StandardTypes.xml" %VERSION% %EXCLUDE% -d2 ".\UA Core Services.xml" -c ".\StandardTypes.csv" -o2 "%OUTPUT%\Schema\" -stack "%OUTPUT%\DotNet\" -ansic "%OUTPUT%\AnsiC\"
-REM IF %ERRORLEVEL% NEQ 0 ( ECHO Failed %PARTNAME% & EXIT /B 1 )
+set INPUT_STD=.\ModelCompiler\Design
+
+REM STEP 1) Generate all of our files first...
+SET PARTNAME="StandardTypes"
+ECHO Building Model %PARTNAME%
+ECHO %MODELCOMPILER% -d2 "%INPUT_STD%\StandardTypes.xml" %VERSION% %EXCLUDE% -d2 "%INPUT_STD%\UA Core Services.xml" -c "%INPUT_STD%\StandardTypes.csv" -o2 "%OUTPUT%\Schema\" -stack "%OUTPUT%\DotNet\" -ansic "%OUTPUT%\AnsiC\"
+%MODELCOMPILER% -d2 "%INPUT_STD%\StandardTypes.xml" %VERSION% %EXCLUDE% -d2 "%INPUT_STD%\UA Core Services.xml" -c "%INPUT_STD%\StandardTypes.csv" -o2 "%OUTPUT%\Schema\" -stack "%OUTPUT%\DotNet\" -ansic "%OUTPUT%\AnsiC\"
+IF %ERRORLEVEL% NEQ 0 ( ECHO Failed %PARTNAME% & EXIT /B 1 )
 
 SET PARTNAME="OpcUaCNC"
 ECHO Building %PARTNAME%
@@ -65,10 +63,10 @@ ECHO ON
 COPY "%INPUT_STD%\StandardTypes.csv" "%OUTPUT%\Schema\NodeIds.csv"
 COPY "%INPUT_STD%\UA Attributes.csv" "%OUTPUT%\Schema\AttributeIds.csv"
 COPY "%OUTPUT%\DotNet\Opc.Ua.StatusCodes.csv" "%OUTPUT%\Schema\StatusCode.csv"
-COPY ".\Core\Schema\UANodeSet.xsd" "%OUTPUT%\Schema\UANodeSet.xsd"
-COPY ".\Core\Schema\SecuredApplication.xsd" "%OUTPUT%\Schema\SecuredApplication.xsd"
-COPY ".\Core\Types\Schemas\OPCBinarySchema.xsd" "%OUTPUT%\Schema\OPCBinarySchema.xsd"
-COPY ".\Core\Schema\ServerCapabilities.csv" "%OUTPUT%\Schema\ServerCapabilities.csv"
+COPY ".\UA-ModelCompiler\Core\Schema\UANodeSet.xsd" "%OUTPUT%\Schema\UANodeSet.xsd"
+COPY ".\UA-ModelCompiler\Core\Schema\SecuredApplication.xsd" "%OUTPUT%\Schema\SecuredApplication.xsd"
+COPY ".\UA-ModelCompiler\Core\Types\Schemas\OPCBinarySchema.xsd" "%OUTPUT%\Schema\OPCBinarySchema.xsd"
+COPY ".\UA-ModelCompiler\Core\Schema\ServerCapabilities.csv" "%OUTPUT%\Schema\ServerCapabilities.csv"
 @ECHO OFF
 
 REM STEP 2a) Copy code to ANSIC
@@ -155,6 +153,8 @@ ECHO ON
 %MODELCOMPILER% -input %OUTPUT% -pattern *.h -license MIT -silent
 %MODELCOMPILER% -input %OUTPUT% -pattern *.c -license MIT -silent
 @ECHO OFF
+
+rd .\ModelCompiler /s /q
 
 GOTO theEnd
 
