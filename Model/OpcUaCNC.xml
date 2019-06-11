@@ -172,9 +172,22 @@
         <opc:BrowseName>CncInterfaceType</opc:BrowseName>
         <opc:Description>Entry point to CNC data interface.</opc:Description>
         <opc:Children>
-            <opc:Object SymbolicName="CncAxisList" TypeDefinition="CncAxisListType" ModellingRule="Mandatory"/>
-            <opc:Object SymbolicName="CncChannelList" TypeDefinition="CncChannelListType" ModellingRule="Mandatory"/>
-            <opc:Property SymbolicName="CncTypeName" DataType="OpcUa:String"/>
+            <opc:Object SymbolicName="CncAxisList" TypeDefinition="CncAxisListType" ModellingRule="Mandatory">
+                <opc:Children>
+                    <opc:Object SymbolicName="X" TypeDefinition="CncAxisType"/>
+                    <opc:Object SymbolicName="Y" TypeDefinition="CncAxisType"/>
+                </opc:Children>
+            </opc:Object>
+            <opc:Object SymbolicName="CncChannelList" TypeDefinition="CncChannelListType" ModellingRule="Mandatory">
+                <opc:Children>
+                    <opc:Object SymbolicName="Channel1" TypeDefinition="CncChannelType"/>
+                </opc:Children>
+            </opc:Object>
+            <opc:Property SymbolicName="CncTypeName" DataType="OpcUa:String">
+                <opc:DefaultValue>
+                    <uax:String>3TA</uax:String>
+                </opc:DefaultValue>
+            </opc:Property>
             <opc:Property SymbolicName="Fix" DataType="OpcUa:String"/>
             <opc:Property SymbolicName="VendorName" DataType="OpcUa:String"/>
             <opc:Property SymbolicName="VendorRevision" DataType="OpcUa:String"/>
@@ -182,9 +195,9 @@
         </opc:Children>
     </opc:ObjectType>
 
-    <opc:Object SymbolicName="CncInterface" TypeDefinition="CncInterfaceType" SupportsEvents="true">
-        <opc:BrowseName>CncInterface</opc:BrowseName>
-        <opc:Description>Entry point to CNC data interface</opc:Description>
+    <opc:Object SymbolicName="XY_Table" TypeDefinition="CncInterfaceType" SupportsEvents="true">
+        <opc:BrowseName>XY_Table</opc:BrowseName>
+        <opc:Description>Entry point to XY_Table interface</opc:Description>
         <opc:References>
             <opc:Reference IsInverse="true">
                 <opc:ReferenceType>OpcUa:Organizes</opc:ReferenceType>
